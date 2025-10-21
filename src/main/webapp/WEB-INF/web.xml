@@ -1,0 +1,40 @@
+<web-app version="3.1">
+    <display-name>ServletDemo</display-name>
+
+
+    <listener>
+        <listener-class>com.example.listners.ContextListner</listener-class>
+    </listener>
+        <!-- Servlet config-->
+    <servlet>
+        <servlet-name>AddNewData</servlet-name>
+        <servlet-class>com.example.servlets.controllers.system.addNewSystem</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>AddNewData</servlet-name>
+        <url-pattern>/addNewSystem</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>HiServlet</servlet-name>
+        <servlet-class>com.example.servlets.controllers.system.HiServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>HiServlet</servlet-name>
+        <url-pattern>/hi</url-pattern>
+    </servlet-mapping>
+
+        <!--    Filter  confgi  -->
+    <filter>
+        <filter-name> AuthFilter </filter-name>
+        <filter-class> com.example.filter.AuthFilter</filter-class>
+    </filter>
+
+    <filter-mapping>
+        <filter-name> AuthFilter </filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+</web-app>
