@@ -5,31 +5,77 @@
     <listener>
         <listener-class>com.example.listners.ContextListner</listener-class>
     </listener>
+
+    <!-- Request Listener -->
+    <listener>
+        <listener-class>com.example.listners.RequestListner</listener-class>
+    </listener>
+
         <!-- Servlet config-->
-    <servlet>
-        <servlet-name>AddNewData</servlet-name>
-        <servlet-class>com.example.servlets.controllers.system.addNewSystem</servlet-class>
-    </servlet>
 
-    <servlet-mapping>
-        <servlet-name>AddNewData</servlet-name>
-        <url-pattern>/addNewSystem</url-pattern>
-    </servlet-mapping>
+        <!--    system -->
 
-    <servlet>
-        <servlet-name>HiServlet</servlet-name>
-        <servlet-class>com.example.servlets.controllers.system.HiServlet</servlet-class>
-    </servlet>
+            <!-- addSystem   -->
+                <servlet>
+                    <servlet-name>AddNewSystem</servlet-name>
+                    <servlet-class>com.example.servlets.controllers.system.AddNewSystem</servlet-class>
+                </servlet>
 
-    <servlet-mapping>
-        <servlet-name>HiServlet</servlet-name>
-        <url-pattern>/hi</url-pattern>
-    </servlet-mapping>
+                <servlet-mapping>
+                    <servlet-name>AddNewSystem</servlet-name>
+                    <url-pattern>/system/addNewSystem</url-pattern>
+                </servlet-mapping>
 
-        <!--    Filter  confgi  -->
+            <!-- deletesystem   -->
+
+                <servlet>
+                    <servlet-name>DeleteSystem</servlet-name>
+                    <servlet-class>com.example.servlets.controllers.system.DeleteSystem</servlet-class>
+                </servlet>
+
+                <servlet-mapping>
+                    <servlet-name>DeleteSystem</servlet-name>
+                    <url-pattern>/system/delSystem</url-pattern>
+                </servlet-mapping>
+
+            <!--      updatesystem      -->
+                <servlet>
+                    <servlet-name> UpdateSystem </servlet-name>
+                    <servlet-class>com.example.servlets.controllers.system.UpdateSystem</servlet-class>
+                </servlet>
+
+                <servlet-mapping>
+                    <servlet-name>UpdateSystem </servlet-name>
+                     <url-pattern>/system/updateSystem</url-pattern>
+                </servlet-mapping>
+
+            <!--      viewsystem      -->
+            <servlet>
+                <servlet-name> ViewSystems </servlet-name>
+                <servlet-class>com.example.servlets.controllers.system.GetAllSystem</servlet-class>
+            </servlet>
+
+            <servlet-mapping>
+                <servlet-name> ViewSystems </servlet-name>
+                <url-pattern>/system/viewSystems</url-pattern>
+            </servlet-mapping>
+
+            <!--      searchsystem      -->
+            <servlet>
+                <servlet-name> SearchSystems </servlet-name>
+                <servlet-class>com.example.servlets.controllers.system.SearchSystems</servlet-class>
+            </servlet>
+
+            <servlet-mapping>
+                <servlet-name> SearchSystems </servlet-name>
+                <url-pattern>/system/search</url-pattern>
+            </servlet-mapping>
+
+
+    <!--    Filter  confgi  -->
     <filter>
         <filter-name> AuthFilter </filter-name>
-        <filter-class> com.example.filter.AuthFilter</filter-class>
+        <filter-class>com.example.filter.ExceptionHandlingFilter</filter-class>
     </filter>
 
     <filter-mapping>

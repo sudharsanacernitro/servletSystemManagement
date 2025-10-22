@@ -106,9 +106,9 @@ public class SystemRepo  {
     }
 
 
-    public boolean updateRecord( Connection conn , SystemBean updateRecord ) {
+    public boolean updateRecord( Connection conn , SystemBean updateRecord , int systemId ) {
 
-        String query = "UPDATE systemInfo SET name = ? , type = ? , userId = ? , ipAddress = ? , macAddress = ?";
+        String query = "UPDATE systemInfo SET name = ? , type = ? , userId = ? , ipAddress = ? , macAddress = ? WHERE systemId = ?";
 
         try( PreparedStatement ps = conn.prepareStatement(query) ){
 
@@ -117,6 +117,8 @@ public class SystemRepo  {
             ps.setInt( 3 , updateRecord.getUserId());
             ps.setString( 4 , updateRecord.getIpAddress());
             ps.setString( 5 , updateRecord.getMacAddress());
+
+            ps.setInt(6 , systemId );
 
             return ps.executeUpdate() == 1 ;
 
