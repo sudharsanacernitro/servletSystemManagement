@@ -1,0 +1,152 @@
+		    client
+			|
+		servlet-container
+			|
+		filter-chains
+			|
+		   Servlet
+			|
+		   filter-chains
+			|
+		    client
+
+
+Servlet-container:
+	
+	-> Servlet container is the one that manages the servlet 
+	-> the container manages the servlet lifecycle by calling init() , destroy
+	-> it creates each new thread for each request instead of having many instance of the servlet
+	-> it reads the web.xml file for each request and based on the url it checks for the mapping in the xml file and route the request accordingly
+	-> this container also tracks the user session management across request by using cookies and url
+	-> The container provides the security by providing authorization/authenticatio and TLS encryption
+	
+	workflow:
+	
+		client -> servletContainer[ Acceptor thread ---accepts and put it in queue---> requestQueue ---- Thread pooling(internal tomcat logic) ---> worker Thread  --
+			---> parses the xml(url configuration) --> respectuve servlet instance]
+
+	during the starting of the servlet-container all the servlets are loaded......and for each thread they uses the same instance......the doGet() function is not synchronized so as many thread can execute it.
+	
+	servelt
+	   |
+	GenericServlet
+	   |
+	httpServlet
+
+	our servlet is loaded once the servlet is called  , but by using <load-on-startup>1</load-on-startup> will load the server on the startup itself
+
+	it reads the web.xml and use reflections to load the classes(servlets,filters,listeners) with their respective url
+
+
+filterChains:
+	
+	we can manage filters and can be chained in the mentioned order in web.xml file.
+	-> Once we read data from the request object then the result won't be able to read anymore
+	-> call chain.doFilter(req , res) - without this the chain will stop and further filters and servlet won't be executed
+	-> we don't want to manually pass the chain object it is handled by the chain.doFilter
+
+
+servlet-Config:
+	servlet config is created for each thread it has a copy of servletContext and we can get it via servlet.getConfig();
+servlet-context:
+	servlet context is used to store the shared resources across thread, it is managed by the servlet-container 
+	created during starting of the container and destories on stopping
+	each servletConfig have refernce to the servletContext , dispatcher and other methods use that to redirect the request
+
+	basically shared resources are sent via the servlet-context fo accessing in multiple threads...........Example : getServletContext().setAttribute("dbPool", myPool);
+
+
+Life-cycle Management:
+	init() : the servlet is initialized suring the booting of the servlet-container
+	service() : the service is called for each requests
+	destroy() : the servlet gets destroyed when the container reloaded or shutdown
+
+	destroy methode can't be called if the servlet stops abruptly , so ServletContextListener.contextDestroyed() should be used for resource clean up
+
+uses:
+	requestrouting() : based on the url they are requested
+	responseGeneration : the servlet generates response which then send back by the container
+	threading : use each thread for each request
+	synchronization : since multiple threads can access the same instance simultaneously we need to ensure thread safety
+	session : with the help of HTTPSession object we can manage the session of the user
+
+servlet (Interface):
+
+	when servlet container calls the servlet it pass two important objects httpRequestObject and httpResponseObject
+
+	A java code that runs in web server
+	it handles the lifecycle of the servlet
+	
+	methods: 
+
+		void destroy(): -> used to destroy the 
+		ServletConfig getServletConfig(): -> used to return the ServletConfig object that contains the config of this servlet
+		String servletInfo(): -> returns the string information about the author , copyright...etc
+		
+
+GenericServlet(abstract class implements servlet) :
+	-> protocol independant , can support ftp,http...etc
+	-> it provides basic implementation of the handling
+
+HttpServlet(abstract class extends GenericServlet):
+	-> overrides the generic Servlet and provides addition functions like doPost,doGet , doPut , doDelete for handling http request
+
+
+HttpRequest object:
+
+	-> it contains the info needed for the processing of the request
+
+	basic methods:
+		String method = request.getMethod();          // "GET", "POST", etc.
+		String protocol = request.getProtocol();      // "HTTP/1.1"
+		String scheme = request.getScheme();          // "http", "https"
+		String serverName = request.getServerName();  // "example.com"
+		int serverPort = request.getServerPort();     // 8080
+		String contextPath = request.getContextPath(); // "/myapp"
+		String servletPath = request.getServletPath(); // "/servlet"
+		String pathInfo = request.getPathInfo();      // "/additional/path"
+
+	url based:
+		requestUrl -> returns stringbuffer of the url that the user has entered
+		requestUri -> the path string after the domain of the server
+		requestQuery -> used to return everything after ? query in string format
+
+
+	parameter : (won't work for api calls only work for form)
+		getparameter("name") -> used to get the value of the paramter named name
+		getparameterValues("phone") -> used to get parameter value if it is more than one
+		getparameterMap() -> used to return the map<String,String[]> - paramters assigned with their list of values
+		getParamterName() -> used to get the list of features passed
+
+	getReader() -> used to get work with api calls
+
+	don't use getParamter and getReader both in a single servlet it only parse once , the second gets null calue
+
+
+HttpResponse:
+	
+	it is the object that was returned to the user
+	
+	setStatus() -> set the status code of the operation	
+	sendError() -> send the error to the client
+	sendRedirect -> used to redirect the user
+	setHeader() -> used to set/override the header
+	setContentType -> used to set the type that we returned
+	getwriter() -> used to send contents to the client like HTML , JSON ...etc
+	getOutputStream() -> this is used to send binary flies like img,video ...etc.
+	
+	flushing/buffering:
+		
+		flushBuffer() -> partial result can be sent by flushout.......used to send continuos partial data.....once sent we can't modify it
+		reset() -> used to reset the response buffer , the response object have no data in it.
+		setBufferSize() -> uesd to set the buffersize ,small - frequent streaming , large - better perfomance
+		
+
+
+redirect and RequestDispatcher :
+	redirect : server sends status code 302 to the user and the url gets changed , client can know
+		   found in HttpServletResponse
+
+	requestDispatcher : server internally forwards the request to another servlet which result in no change in the client browser
+			    present in HttpServletRequest 
+
